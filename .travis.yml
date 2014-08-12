@@ -1,0 +1,4 @@
+language: java
+jdk:
+  - openjdk6
+install: mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file -Dfile=lib/go-plugin-api-14.1.0.jar
