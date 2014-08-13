@@ -1,7 +1,8 @@
-package com.gocd.release_tagger.core;
+package com.thoughtworks.go.release_tagger.core;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jcabi.github.*;
+import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -15,13 +16,20 @@ import static java.lang.String.format;
 
 public class GitReleaseTagger {
 
-    public String tagAllDependentRepos(String pipelineValueStreamMapUrl, String pipelineCounter, String username, String password, String authToken, String email) throws IOException {
+    public static void main(String[] args) throws IOException {
+        new GitReleaseTagger().tagAllDependentRepos("http://127.0.0.1:8153/go/pipelines/value_stream_map/DummyPipeline/8.json","8","admin","Helpdesk","8f1cde11b145d7aaf71b9f1d5922eeb2f09af65a","a@b.com", null);
+    }
+    public String tagAllDependentRepos(String pipelineValueStreamMapUrl, String pipelineCounter,
+                                       String username, String password, String authToken, String email, TaskExecutionContext taskExecutionContext) throws IOException {
         String currentDateTime = DateTime.now().toString("yyyy-MM-dd_k-m-s");
         String tag = format("v%s_%s", pipelineCounter, currentDateTime);
 
         WebClient webClient = WebClient.create(pipelineValueStreamMapUrl, username, password,null);
         String response = webClient.get(String.class);
         JSONArray nodes = JsonPath.read(response, "$.levels[*].nodes[?(@.node_type == 'GIT')]");
+        taskExecutionContext.console().printLine(authToken);
+        taskExecutionContext.console().printLine(new RtGithub(authToken).toString());
+
         Github github = new RtGithub(authToken);
 
         for(Object node : nodes){

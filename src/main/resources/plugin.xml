@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<go-plugin id="com.lambdastack.go.gocd-artifacts-propagator-uploader" version="1.0-SNAPSHOT">
+<go-plugin id="git-release-tagger" version="1.0-SNAPSHOT">
     <about>
         <name>GO - Git release tagger</name>
         <version>1.0-SNAPSHOT</version>

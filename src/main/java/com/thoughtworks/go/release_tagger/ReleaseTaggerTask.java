@@ -1,13 +1,13 @@
-package com.gocd.release_tagger;
+package com.thoughtworks.go.release_tagger;
 
-import com.gocd.release_tagger.executors.ReleaseTaggerExecutor;
-import com.gocd.release_tagger.views.ReleaseTaggerView;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import com.thoughtworks.go.plugin.api.task.Task;
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 import com.thoughtworks.go.plugin.api.task.TaskView;
+import com.thoughtworks.go.release_tagger.executors.ReleaseTaggerExecutor;
+import com.thoughtworks.go.release_tagger.views.ReleaseTaggerView;
 
 @Extension
 public class ReleaseTaggerTask implements Task {

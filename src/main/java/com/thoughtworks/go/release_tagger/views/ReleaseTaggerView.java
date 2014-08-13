@@ -1,4 +1,4 @@
-package com.gocd.release_tagger.views;
+package com.thoughtworks.go.release_tagger.views;
 
 import com.thoughtworks.go.plugin.api.task.TaskView;
 import org.apache.commons.io.IOUtils;

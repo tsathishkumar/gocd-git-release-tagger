@@ -1,19 +1,24 @@
-package com.gocd.release_tagger.executors;
+package com.thoughtworks.go.release_tagger.executors;
 
-import com.gocd.release_tagger.core.GitReleaseTagger;
 import com.thoughtworks.go.plugin.api.response.execution.ExecutionResult;
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
+import com.thoughtworks.go.release_tagger.core.GitReleaseTagger;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ReleaseTaggerExecutor implements TaskExecutor {
 
     @Override
     public ExecutionResult execute(TaskConfig taskConfig, TaskExecutionContext taskExecutionContext) {
+
+        taskExecutionContext.console().printLine("Running Git Release Tagger");
         try {
-            Map<String, String> environmentVariables = taskExecutionContext.environment().asMap();
+            Map<String, String> environmentVariables = environmentVariablesMap(taskExecutionContext);
             String serverUrl = environmentVariables.get("GO_SERVER_URL");
             String pipeline = environmentVariables.get("GO_PIPELINE_NAME");
             String pipelineCounter = environmentVariables.get("GO_PIPELINE_COUNTER");
@@ -23,17 +28,27 @@ public class ReleaseTaggerExecutor implements TaskExecutor {
             String authToken = environmentVariables.get("GO_AUTH_TOKEN");
 
             String pipelineValueStreamMapUrl = serverUrl + "pipelines/value_stream_map/" + pipeline +"/" +pipelineCounter + ".json";
-
             GitReleaseTagger gitReleaseTagger = new GitReleaseTagger();
-            String tag = gitReleaseTagger.tagAllDependentRepos(pipelineValueStreamMapUrl, pipelineCounter, userName, password, authToken, email);
-
+            taskExecutionContext.console().printLine("pipelineValueStreamMapUrl:"+pipelineValueStreamMapUrl+" pipelineCounter:"
+                            +pipelineCounter+" userName:"+userName+" password:"+password+" authToken:"+authToken+" email:"+email);
+            String tag = gitReleaseTagger.tagAllDependentRepos(pipelineValueStreamMapUrl, pipelineCounter, userName, password, authToken, email, taskExecutionContext);
 
             return ExecutionResult.success("All dependent repo's are tagged with name: " + tag);
-        } catch (Exception e) {
-            taskExecutionContext.console().printLine(e.getMessage());
+        } catch (Throwable e) {
             taskExecutionContext.console().printLine(stackTraceToString(e));
-            return ExecutionResult.failure("Release tagging failed", e);
+            return ExecutionResult.failure("Release tagging failed", new Exception(e));
         }
+    }
+
+    private Map<String, String> environmentVariablesMap(TaskExecutionContext taskExecutionContext) throws MalformedURLException {
+        Map<String, String> environmentMap = taskExecutionContext.environment().asMap();
+        Map<String, String> mutableEnvironmentMap = new HashMap<String, String>();
+        for(String key : environmentMap.keySet()) {
+            mutableEnvironmentMap.put(key, environmentMap.get(key));
+        }
+        URL goServerURL = new URL(environmentMap.get("GO_SERVER_URL"));
+        mutableEnvironmentMap.put("GO_SERVER_URL","http://"+goServerURL.getHost()+":8153/go/");
+        return mutableEnvironmentMap;
     }
 
     public String stackTraceToString(Throwable e) {
