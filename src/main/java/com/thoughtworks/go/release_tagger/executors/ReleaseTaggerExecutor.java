@@ -19,7 +19,7 @@ public class ReleaseTaggerExecutor implements TaskExecutor {
     public static final String GO_USER_NAME = "GO_USER_NAME";
     public static final String GO_USER_EMAIL = "GO_USER_EMAIL";
     public static final String GO_PASSWORD = "GO_PASSWORD";
-    public static final String GO_AUTH_TOKEN = "GO_AUTH_TOKEN";
+    public static final String GIT_AUTH_TOKEN = "GIT_AUTH_TOKEN";
 
     @Override
     public ExecutionResult execute(TaskConfig taskConfig, TaskExecutionContext taskExecutionContext) {
@@ -32,7 +32,7 @@ public class ReleaseTaggerExecutor implements TaskExecutor {
             String userName = environmentVariables.get(GO_USER_NAME);
             String email = environmentVariables.get(GO_USER_EMAIL);
             String password = environmentVariables.get(GO_PASSWORD);
-            String authToken = environmentVariables.get(GO_AUTH_TOKEN);
+            String authToken = environmentVariables.get(GIT_AUTH_TOKEN);
 
             String pipelineValueStreamMapUrl = serverUrl + "pipelines/value_stream_map/" + pipeline +"/" +pipelineCounter + ".json";
             GitReleaseTagger gitReleaseTagger = new GitReleaseTagger();
