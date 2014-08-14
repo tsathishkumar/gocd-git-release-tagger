@@ -11,7 +11,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <go.version>14.1.0</go.version>
-        <jcabi.version>0.13.1</jcabi.version>
         <cxf.version>3.0.0</cxf.version>
     </properties>
 
@@ -82,12 +81,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-github</artifactId>
-            <version>${jcabi.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>1.0.4</version>
@@ -102,7 +95,6 @@
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>test/java</testSourceDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -129,9 +121,6 @@
                     <archive>
                         <manifestEntries>
                             <Go-Version>${go.version}</Go-Version>
-                            <JCabi-Version>${jcabi.version}</JCabi-Version>
-                            <JCabi-Build>63ef26d</JCabi-Build>
-                            <JCabi-Date>2014-08-01 07:26</JCabi-Date>
                         </manifestEntries>
                     </archive>
                 </configuration>
