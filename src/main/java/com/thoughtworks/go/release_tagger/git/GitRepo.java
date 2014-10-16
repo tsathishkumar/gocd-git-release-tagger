@@ -4,12 +4,14 @@ import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONObject;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.joda.time.format.ISODateTimeFormat.dateTimeNoMillis;
 
 public class GitRepo {
 
@@ -34,7 +36,7 @@ public class GitRepo {
         JsonObject tagger = Json.createObjectBuilder()
                 .add("name", userName)
                 .add("email", email)
-                .add("date", DateTime.now().toString()).build();
+                .add("date", dateTimeNoMillis().print(DateTime.now())).build();
         return Json.createObjectBuilder()
                 .add("tag", tagName)
                 .add("message", message)
@@ -50,7 +52,7 @@ public class GitRepo {
                 .type(APPLICATION_JSON)
                 .post(requestBody.toString());
         if(response.getStatus() != 201)
-            throw new RuntimeException(response.getStatus() + " - Git Api Error while posting " + url);
+            throw new RuntimeException(response.getStatus() + " - Git Api Error while posting to " + url + " with " + requestBody.toString() + " . Got " + response.toString() );
         return (JSONObject) JsonPath.parse(response.readEntity(String.class)).json();
     }
 }
