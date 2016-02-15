@@ -26,7 +26,10 @@ public class GitRepo {
 
     public void createTag(String userName, String email, String commitHash, String tagName, String message) {
         JsonObject requestBody = tagBody(userName, email, commitHash, tagName, message);
-        post(gitRepoUri + "/git/tags?access_token=" + this.authToken, requestBody);
+        JSONObject tagCreateResponse = post(gitRepoUri + "/git/tags?access_token=" + this.authToken, requestBody);
+        post(gitRepoUri + "/git/refs?access_token=" + authToken, Json.createObjectBuilder()
+                .add("ref", "refs/tags/" + requestBody.getString("tag"))
+                .add("sha", (String) tagCreateResponse.get("sha")).build());
     }
 
     private JsonObject tagBody(String userName, String email, String commitHash, String tagName, String message) {
