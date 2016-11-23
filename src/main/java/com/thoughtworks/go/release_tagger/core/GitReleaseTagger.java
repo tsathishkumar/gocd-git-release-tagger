@@ -31,7 +31,7 @@ public class GitReleaseTagger {
             String repoName = getRepoFromGitUrl(gitUrl);
             String repoUserName = getUserFromGitUrl(gitUrl);
 
-            String commitHash = (String) ((JSONObject) ((JSONArray) ((JSONObject) node).get("instances")).get(0)).get("revision");
+            String commitHash = (String)((JSONObject)((JSONArray) ((JSONObject) ((JSONArray) ((JSONObject) node).get("material_revisions")).get(0)).get("modifications")).get(0)).get("revision");
 
             GitRepo gitRepo = new GitRepo(repoUserName, repoName, authToken);
             gitRepo.createTag(username, email, commitHash, tag, "Released on " + currentDateTime);

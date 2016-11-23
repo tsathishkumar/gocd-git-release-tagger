@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<go-plugin id="git-release-tagger" version="1.0-SNAPSHOT">
+<go-plugin id="git-release-tagger" version="1">
     <about>
         <name>GO - Git release tagger</name>
-        <version>1.0-SNAPSHOT</version>
-        <target-go-version>14.1.0</target-go-version>
+        <version>1</version>
+        <target-go-version>16.10.0</target-go-version>
         <description>
             Go plugin to tag all the dependent git repositories post release.
         </description>
