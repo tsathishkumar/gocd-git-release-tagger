@@ -7,6 +7,8 @@ import net.minidev.json.JSONObject;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.joda.time.DateTime;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,9 +23,9 @@ public class GitReleaseTagger {
         String currentDateTime = DateTime.now().toString(YYYY_MM_DD_KK_MM_SS);
         String tag = format("v%s_%s", pipelineCounter, currentDateTime);
 
-        WebClient webClient = WebClient.create(pipelineValueStreamMapUrl, username, password, null);
-        String response = webClient.get(String.class);
-        JSONArray nodes = JsonPath.read(response, "$.levels[*].nodes[?(@.node_type == 'GIT')]");
+        JSONArray nodes = fetchDependentRepos(pipelineValueStreamMapUrl, username, password);
+
+        Map<String, Map<String, Integer>> processedRepos = new HashMap<String, Map<String, Integer>>();
 
         for (Object node : nodes) {
             String gitUrl = (String) ((JSONObject) node).get("name");
@@ -32,11 +34,23 @@ public class GitReleaseTagger {
             String repoUserName = getUserFromGitUrl(gitUrl);
 
             String commitHash = (String)((JSONObject)((JSONArray) ((JSONObject) ((JSONArray) ((JSONObject) node).get("material_revisions")).get(0)).get("modifications")).get(0)).get("revision");
+            Map<String, Integer> repoShaCount = processedRepos.getOrDefault(repoName, new HashMap<String, Integer>());
+            repoShaCount.put(commitHash, repoShaCount.getOrDefault(commitHash, 0) + 1);
+            processedRepos.put(repoName, repoShaCount);
+            if (repoShaCount.getOrDefault(commitHash, 0) > 1) {
+                continue;
+            }
 
             GitRepo gitRepo = new GitRepo(repoUserName, repoName, authToken);
             gitRepo.createTag(username, email, commitHash, tag, "Released on " + currentDateTime);
         }
         return tag;
+    }
+
+    private JSONArray fetchDependentRepos(String pipelineValueStreamMapUrl, String username, String password) {
+        WebClient webClient = WebClient.create(pipelineValueStreamMapUrl, username, password, null);
+        String response = webClient.get(String.class);
+        return JsonPath.read(response, "$.levels[*].nodes[?(@.node_type == 'GIT')]");
     }
 
     public String getRepoFromGitUrl(String gitUrl) throws Exception {
