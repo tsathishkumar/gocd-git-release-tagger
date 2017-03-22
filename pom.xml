@@ -19,7 +19,8 @@
             <groupId>com.thoughtworks.go</groupId>
             <artifactId>go-plugin-api</artifactId>
             <version>${go.version}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/go-plugin-api-14.1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
