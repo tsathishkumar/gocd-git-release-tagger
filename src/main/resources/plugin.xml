@@ -3,8 +3,8 @@
 <go-plugin id="git-release-tagger" version="1">
     <about>
         <name>GO - Git release tagger</name>
-        <version>1</version>
-        <target-go-version>16.10.0</target-go-version>
+        <version>2</version>
+        <target-go-version>17.5.0</target-go-version>
         <description>
             Go plugin to tag all the dependent git repositories post release.
         </description>
